@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author saiko
  */
-public class SongList extends HttpServlet {
+public class SongListNOT extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,8 +42,9 @@ public class SongList extends HttpServlet {
             String password = "s0ng@dm1n";
             
             try {
+                DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
                 Connection con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/song_list?serverTimezone=UTC&characterEncoding=utf-8&autoReconnect=true",
+                    "jdbc:mysql://localhost:3306/song_list?serverTimezone=UTC&characterEncoding=utf-8&autoReconnect=true&useSSL=false",
                     user,
                     password
                 );
