@@ -50,28 +50,18 @@ public class SongListJPA extends HttpServlet {
                             getResultList();
             log("Loaded " + songs.size() + " songs");
             
+            request.setAttribute("songs", songs);
+            request.getRequestDispatcher("songs.jsp").forward(request, response);
+            
         }
         catch(Exception e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-            log("Error: " + e, e);
+            log("Data access error: " + e.getMessage(), e);
+            response.sendError(
+                HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+                e.getMessage()
+            );
         }
         
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet SongListJPA</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet SongListJPA: (" + songs.size() + ")</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-        catch(Exception e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
