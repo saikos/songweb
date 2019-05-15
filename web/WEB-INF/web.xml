@@ -4,9 +4,25 @@
         <servlet-name>SongList</servlet-name>
         <servlet-class>com.song_list.SongListNOT</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>SongListDao</servlet-name>
+        <servlet-class>com.song_list.SongListWithDao</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SongListJPA</servlet-name>
+        <servlet-class>com.song_list.SongListJPA</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>SongList</servlet-name>
         <url-pattern>/songs_not.html</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SongListDao</servlet-name>
+        <url-pattern>/songs_dao.html</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SongListJPA</servlet-name>
+        <url-pattern>/songs_jpa.html</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

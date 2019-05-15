@@ -22,8 +22,10 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author saiko
  */
-public class SongListNOT extends HttpServlet {
-
+public class SongListWithDao extends HttpServlet {
+    
+    private SongDao dao = new MySQLSongDaoImpl();   
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -34,56 +36,22 @@ public class SongListNOT extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");                
+            throws ServletException, IOException {        
         
-        try (PrintWriter out = response.getWriter()) {                        
+        try {
             
-            List<ManualSongEntity> songs = new ArrayList<>();
+            List<ManualSongEntity> songs = dao.getSongs();
             
-            String user = "songadmin";
-            String password = "s0ng@dm1n";
+            request.setAttribute("songs", songs);
+            request.getRequestDispatcher("songs.jsp").forward(request, response);
             
-            try {
-                DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
-                Connection con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/song_list?serverTimezone=UTC&characterEncoding=utf-8&autoReconnect=true&useSSL=false",
-                    user,
-                    password
-                );
-
-                Statement stmt = con.createStatement();
-                ResultSet rs = stmt.executeQuery("select id, title, artist from song order by title");                
-                while (rs.next()) {
-                    Long id = rs.getLong(1);
-                    String title = rs.getString(2);
-                    String artist = rs.getString(3);
-                    ManualSongEntity song = new ManualSongEntity(id, title, artist);
-                    songs.add(song);
-                }
-            }
-            catch(Exception e) {
-                response.sendError(
-                    HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
-                    e.getMessage()
-                );
-            }
-           
-            
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet SongList</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet SongList (" + songs.size() + ")</h1>");
-            for(ManualSongEntity song: songs) {
-                out.println(song.getArtist() + " - " + song.getTitle());
-                out.println("<br>");
-            }
-            out.println("</body>");
-            out.println("</html>");
+        }
+        catch(DataAccessException dae) {
+            log("Data access error: " + dae.getMessage(), dae);
+            response.sendError(
+                HttpServletResponse.SC_INTERNAL_SERVER_ERROR, 
+                dae.getMessage()
+            );
         }
     }
 
@@ -125,5 +93,5 @@ public class SongListNOT extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
+    
 }
